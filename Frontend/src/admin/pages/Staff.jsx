@@ -243,9 +243,9 @@ const Staff = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085",
+              backgroundColor: "#b88a57",
             },
           }}
         >
@@ -342,7 +342,9 @@ const Staff = () => {
               {/* Buttons */}
               <div className="pt-8 flex justify-end gap-7">
                 <Button
-                  color="secondary"
+                  sx={{
+                    color: "red",
+                  }}
                   onClick={formClose}
                   disabled={loading}
                 >
@@ -353,9 +355,9 @@ const Staff = () => {
                   variant="contained"
                   disabled={loading}
                   sx={{
-                    backgroundColor: "#1abc9c",
+                    backgroundColor: "#cc9f64",
                     "&:hover": {
-                      backgroundColor: "#16a085",
+                      backgroundColor: "#b88a57",
                     },
                   }}
                 >
@@ -371,10 +373,10 @@ const Staff = () => {
           <RotatingLines width="50" strokeColor="#1abc9c" />
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-4 grid grid-cols-1 gap-4 overflow-x-auto">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden min-w-[1000px]">
             {/* Header Row */}
-            <div className="grid grid-cols-9 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-9 bg-[#fcefde] text-center text-sm md:text-base">
               {/* Sortable S.No Column */}
               <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
                 S.No{" "}
@@ -646,7 +648,7 @@ const Staff = () => {
                               staff.staff_start_time,
                               staff.staff_end_time,
                               staff.staff_salary,
-                              staff.staff_cell,
+                              staff.staff_cell
                             )
                           }
                         >

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,12 +32,17 @@ import Students from "./CourseManagement/Students";
 
 
 const Admin = () => {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
   
   return (
     <div className="admin-container flex bg-white text-slate-600 min-h-screen">
-      <Sidebar />
-      <div className="main-content flex-1 transition-all duration-200 bg-slate-50 text-slate-700">
-        <Navbar />
+      <Sidebar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+      <div className="main-content flex-1 transition-all duration-200 bg-[#fdfbf8]  text-slate-700">
+        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
         <hr className="border-gray-300" />
         <Routes>
           <Route path="/dashboard" element={<Dashboard />} />

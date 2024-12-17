@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom"; 
-import { FaCog, FaUserCircle } from "react-icons/fa";
-import { FiSearch } from "react-icons/fi";
-
-const Navbar = () => { 
+import { FaCog,FaBars, FaTimes ,FaUserCircle } from "react-icons/fa"; 
+import { FiArrowLeftCircle } from "react-icons/fi";
+const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
   const userName = "Admin";
   const navigate = useNavigate();
 
@@ -43,33 +42,30 @@ const Navbar = () => {
 
   return (
     <div
-      className={`navbar px-3 py-4 z-50 sticky top-0 transition-shadow duration-300 bg-[#2c3e50] text-[#067528] ${
+      className={`navbar px-4 md:px-12 py-4 md:z-50 md:sticky md:top-0 transition-shadow duration-300 bg-[#cc9f64] ${
         hasShadow ? " shadow-[ 0px 4px 8px rgba(0, 0, 0, 0.1)]" : ""
       }`}
     >
-      <div className="container  flex justify-between items-center">
-        <div className="search hidden md:flex border border-[#cfd1d0] focus-within:outline focus-within:outline-[#a8aaa8] focus-within:outline-1 rounded-md py ml-14">
-          <button
-            className="border-r-white bg-white rounded-l-md pl-2 pr-1.5 py-1 "
-            disabled
-          >
-            <FiSearch className="w-[17px] h-[17px] text-[#808180]" />
-          </button>
-          <input
-            type="text"
-            placeholder="Search for ..."
-            className="border-l-white bg-white text-[14px] outline-none rounded-r-md w-[275px] px-1 py-[7px]"
-            disabled
-          />
-        </div>
+      <div className="container  flex justify-between items-center  ">
+        {/* Sidebar Toggle Button */}
 
+        <button
+          onClick={toggleSidebar}
+          className="text-2xl text-[#ecf0f1] md: focus:outline-none "
+        >
+          {isSidebarOpen ? (
+            <FiArrowLeftCircle className="text-3xl cursor-pointer hover:text-[#976f3b]" />
+          ) : (
+            <FaBars className="text-3xl cursor-pointer hover:text-[#976f3b]" />
+          )}
+        </button>
         <div
           className="relative"
           onMouseEnter={() => setShowDropdown(true)}
           onMouseLeave={handleDelayedHide}
         >
           <NavLink className="nav-link">
-            <FaUserCircle className="w-10 h-10 text-[#ecf0f1]" />
+            <FaUserCircle className="w-10 h-10 text-white hover:text-[#976f3b] hover:bg-white rounded-full " />
           </NavLink>
 
           {showDropdown && (
@@ -81,16 +77,10 @@ const Navbar = () => {
               <p className="px-4 py-2 text-sm text-[#2c3e50] border-b">
                 {userName}
               </p>
-              <div className="flex flex-col items-start md:hidden">
-                <NavLink className="nav-link w-full px-4 py-2 text-left text-sm text-[#067528] hover:bg-[#067528] hover:text-white">
-                  <FaCog className="inline-block w-[17px] h-[17px] mr-2" />
-                  Settings
-                </NavLink>
-              </div>
 
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-4 py-2 bg-[#1abc9c] text-sm text-[#ffffff] hover:bg-[#16a085]  transition-all"
+                className="w-full text-left px-4 py-2 bg-[#cc9f64] text-sm text-[#ffffff] hover:bg-[#b88542]  transition-all"
               >
                 Logout
               </button>

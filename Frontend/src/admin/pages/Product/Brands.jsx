@@ -180,7 +180,7 @@ const Brands = () => {
             variant="outlined"
             placeholder="Search Brand"
             size="small"
-            className="w-72"
+            className="md:w-72"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress} // Trigger search on Enter
@@ -198,9 +198,9 @@ const Brands = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085", // Optional: Adjust hover color for consistency
+              backgroundColor: "#b88a57", // Optional: Adjust hover color for consistency
             },
           }}
         >
@@ -264,9 +264,9 @@ const Brands = () => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#1abc9c",
+                    backgroundColor: "#cc9f64",
                     "&:hover": {
-                      backgroundColor: "#16a085", // Optional: Adjust hover color for consistency
+                      backgroundColor: "#b88a57", // Optional: Adjust hover color for consistency
                     },
                   }}
                 >
@@ -283,17 +283,17 @@ const Brands = () => {
         </div>
       ) : (
         <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-x-auto">
             {/* Header Row */}
-            <div className="grid grid-cols-5 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-5 bg-[#fcefde] text-center text-xs md:text-sm lg:text-base">
               {/* S.No Column */}
-              <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
+              <div className="py-2 md:py-3 text-gray-800 font-semibold flex justify-center items-center">
                 Sr No.
               </div>
 
               {/* Name Column */}
               <div
-                className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
+                className="py-2 md:py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
                 onClick={() => handleSort("brand_name")}
               >
                 Brand Name{" "}
@@ -309,13 +309,13 @@ const Brands = () => {
               </div>
 
               {/* Category_id Column */}
-              <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
+              <div className="py-2 md:py-3 text-gray-800 font-semibold flex justify-center items-center">
                 Category ID
               </div>
 
               {/* Added On Column */}
               <div
-                className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
+                className="py-2 md:py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
                 onClick={() => handleSort("createdAt")}
               >
                 Added On{" "}
@@ -331,7 +331,9 @@ const Brands = () => {
               </div>
 
               {/* Actions Column */}
-              <div className="py-3 text-gray-800 font-semibold">Actions</div>
+              <div className="py-2 md:py-3 text-gray-800 font-semibold flex justify-center items-center">
+                Actions
+              </div>
             </div>
 
             {/* Data Rows */}
@@ -342,10 +344,10 @@ const Brands = () => {
                   className="grid grid-cols-5 gap-2 border-b text-gray-700 text-xs md:text-sm hover:bg-gray-100"
                 >
                   {/* Sr No */}
-                  <div className="py-3 text-center">{index + 1}</div>
+                  <div className="py-2 md:py-3 text-center">{index + 1}</div>
 
                   {/* Brand Name */}
-                  <div className="py-3 text-center">
+                  <div className="py-2 md:py-3 text-center">
                     {editingBrandId === brand._id ? (
                       <input
                         type="text"
@@ -358,49 +360,33 @@ const Brands = () => {
                     )}
                   </div>
 
-                  {/* Category ID (Display select box in edit mode) */}
-                  <div className="py-3  text-center">
+                  {/* Category ID */}
+                  <div className="py-2 md:py-3 text-center">
                     {editingBrandId === brand._id ? (
-                      <FormControl fullWidth variant="outlined">
-                        <InputLabel>Brand Category</InputLabel>
-                        <Select
-                          value={newItems.category_id}
-                          name="category_id"
-                          onChange={(e) => setEditingCategoryId(e.target.value)}
-                          label="Select Category"
-                          MenuProps={{
-                            PaperProps: {
-                              style: {
-                                textAlign: "left",
-                                maxHeight: "150px", // Reduced the height of the dropdown
-                                overflowY: "auto", // Ensures scrolling if the items exceed the max height
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">
-                            <em>Select Category</em>
-                          </MenuItem>
-                          {/* Map through categories to create MenuItem for each */}
-                          {categories.map((category) => (
-                            <MenuItem key={category._id} value={category._id}>
-                              {category.category_name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                      <select
+                        value={newItems.category_id}
+                        onChange={(e) => setEditingCategoryId(e.target.value)}
+                        className="w-full bg-blue-100 text-center"
+                      >
+                        <option value="">Select Category</option>
+                        {categories.map((category) => (
+                          <option key={category._id} value={category._id}>
+                            {category.category_name}
+                          </option>
+                        ))}
+                      </select>
                     ) : (
-                      brand.category_id?.category_name || "No Category" // Add a fallback here
+                      brand.category_id?.category_name || "No Category"
                     )}
                   </div>
 
                   {/* Added On */}
-                  <div className="py-3 text-center">
+                  <div className="py-2 md:py-3 text-center">
                     {new Date(brand.createdAt).toLocaleDateString("en-GB")}
                   </div>
 
                   {/* Actions */}
-                  <div className="py-3 text-center flex justify-center">
+                  <div className="py-2 md:py-3 text-center flex justify-center">
                     {editingBrandId === brand._id ? (
                       <>
                         <button
@@ -442,7 +428,7 @@ const Brands = () => {
                 </div>
               ))
             ) : (
-              <div className="text-center py-5">No Brands Found</div>
+              <div className="text-center py-4 md:py-5">No Brands Found</div>
             )}
           </div>
         </div>

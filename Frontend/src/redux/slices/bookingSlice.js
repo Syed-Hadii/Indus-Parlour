@@ -29,23 +29,12 @@ export const fetchAllBooking = createAsyncThunk(
 // Thunk to add a new booking
 export const addBooking = createAsyncThunk(
   "booking/addBooking",
-  async (newServiceData, { rejectWithValue }) => {
-    const {
-      booking_date,
-      booking_service_type,
-      booking_services,
-      booking_packages,
-      booking_customer,
-      booking_payment_type,
-      booking_advance,
-      booking_discount,
-      booking_appointment_time,
-    } = newServiceData;
-    //  console.log("New Service Data:", newServiceData);
+  async (newBookingData, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${url}/booking/add_booking`, {
+      // Build the payload based on booking type
+      const {
         booking_date,
-        booking_service_type,
+        booking_type,
         booking_services,
         booking_packages,
         booking_customer,
@@ -53,14 +42,58 @@ export const addBooking = createAsyncThunk(
         booking_advance,
         booking_discount,
         booking_appointment_time,
-      });
-      // console.log("API Response:", response.data);
+      } = newBookingData;
+
+      // Prepare data for API request
+   const payload = {
+     booking_type,
+     booking_date,
+     booking_customer,
+     booking_payment_type,
+     booking_advance: booking_advance || 0,
+     booking_discount: booking_discount || 0,
+     ...(booking_type === "Regular" && {
+       booking_appointment_time,
+       booking_services: booking_services.map((service) => ({
+         service: service.service || service, // Map service ID directly
+       })),
+       booking_packages: booking_packages.map((pkg) => ({
+         package: pkg.package || pkg, // Ensure only the package ID is included
+       })),
+     }),
+     ...(booking_type === "Bridal" && {
+       booking_services: booking_services.map((service) => ({
+         service: service.service || service, // Service ID
+         service_date: service.service_date || null,
+         service_time: service.service_time || null,
+       })),
+       booking_packages: booking_packages.map((pkg) => ({
+         package: pkg.package || pkg, // Package ID
+         services: pkg.services?.map((pkgService) => ({
+           service: pkgService.service || null, // Service ID within package
+           service_date: pkgService.service_date || null,
+           service_time: pkgService.service_time || null,
+         })),
+       })),
+     }),
+   };
+
+console.log("Payload Sent to Backend:", payload);
+
+
+      // API call
+      const response = await axios.post(`${url}/booking/add_booking`, payload);
+
+      // Return response data
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      // Handle API errors
+      return rejectWithValue(error.response?.data || "An error occurred");
     }
   }
 );
+
+
 
 // Thunk to delete a booking by ID
 export const deleteBooking = createAsyncThunk(

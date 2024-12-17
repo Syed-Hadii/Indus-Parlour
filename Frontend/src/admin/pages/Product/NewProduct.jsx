@@ -18,7 +18,7 @@ import {
   FormControl,
   InputLabel,
   Pagination,
-  IconButton, 
+  IconButton,
 } from "@mui/material";
 import {
   fetchProducts,
@@ -29,17 +29,15 @@ import {
 import { fetchAllCategories } from "../../../redux/slices/ProductSlices/categoriesSlice";
 import { fetchAllBrands } from "../../../redux/slices/ProductSlices/brandSlice";
 import { fetchAllVariations } from "../../../redux/slices/ProductSlices/variationSlice";
-import { useDispatch, useSelector } from "react-redux"; 
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RotatingLines } from "react-loader-spinner";
 
-const NewProduct = () => { 
+const NewProduct = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProductId, setEditingProductId] = useState(null);
-
   const [editingProductName, setEditingProductName] = useState("");
-  const [editingCategory, setEditingCategory] = useState(null);
   const [editingBrand, setEditingBrand] = useState(null);
   const [editingVariation, setEditingVariation] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -177,7 +175,7 @@ const NewProduct = () => {
     try {
       await dispatch(
         updateProduct({
-          id: editingProductId, 
+          id: editingProductId,
           brand_id: editingBrand,
           product_name: editingProductName,
           variation_id: editingVariation,
@@ -220,163 +218,167 @@ const NewProduct = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085", // Optional: Adjust hover color for consistency
+              backgroundColor: "#b88a57", // Optional: Adjust hover color for consistency
             },
           }}
         >
           Add New Product
         </Button>
       </div>
-    {showAddForm && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-    <div className="bg-white p-6 text-center rounded-lg shadow-2xl w-[650px] relative mt-10">
-      <h1 className="text-2xl font-bold text-gray-700 mb-4">Add New Product</h1>
-      <hr className="mb-6 border-gray-300" />
-      <form className="space-y-6" onSubmit={handleAddProduct}>
-        {/* Categories */}
-        <div className="text-left">
-          <FormControl fullWidth variant="outlined" className="mb-3">
-            <InputLabel>Categories *</InputLabel>
-            <Select
-              value={newItems.category_id || ""}
-              name="category_id"
-              onChange={handleChange}
-              label="Categories *"
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    textAlign: "left",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="">
-                <em>Select Category</em>
-              </MenuItem>
-              {categories.map((category, index) => (
-                <MenuItem key={category._id || index} value={category._id}>
-                  {category.category_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+      {showAddForm && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
+          <div className="bg-white p-6 text-center rounded-lg shadow-2xl w-[650px] relative mt-10">
+            <h1 className="text-2xl font-bold text-gray-700 mb-4">
+              Add New Product
+            </h1>
+            <hr className="mb-6 border-gray-300" />
+            <form className="space-y-6" onSubmit={handleAddProduct}>
+              {/* Categories */}
+              <div className="text-left">
+                <FormControl fullWidth variant="outlined" className="mb-3">
+                  <InputLabel>Categories *</InputLabel>
+                  <Select
+                    value={newItems.category_id || ""}
+                    name="category_id"
+                    onChange={handleChange}
+                    label="Categories *"
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          textAlign: "left",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>Select Category</em>
+                    </MenuItem>
+                    {categories.map((category, index) => (
+                      <MenuItem
+                        key={category._id || index}
+                        value={category._id}
+                      >
+                        {category.category_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-        {/* Brands */}
-        <div className="text-left">
-          <FormControl fullWidth variant="outlined" className="mb-3">
-            <InputLabel>Brands *</InputLabel>
-            <Select
-              value={newItems.brand_id || ""}
-              name="brand_id"
-              onChange={handleChange}
-              label="Brands *"
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    textAlign: "left",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="">
-                <em>Select Brand</em>
-              </MenuItem>
-              {brands.map((brand, index) => (
-                <MenuItem key={brand._id || index} value={brand._id}>
-                  {brand.brand_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+              {/* Brands */}
+              <div className="text-left">
+                <FormControl fullWidth variant="outlined" className="mb-3">
+                  <InputLabel>Brands *</InputLabel>
+                  <Select
+                    value={newItems.brand_id || ""}
+                    name="brand_id"
+                    onChange={handleChange}
+                    label="Brands *"
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          textAlign: "left",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>Select Brand</em>
+                    </MenuItem>
+                    {brands.map((brand, index) => (
+                      <MenuItem key={brand._id || index} value={brand._id}>
+                        {brand.brand_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-        {/* Product Name */}
-        <div className="text-left">
-          <TextField
-            fullWidth
-            label="Product Name"
-            variant="outlined"
-            name="product_name"
-            value={newItems.product_name}
-            onChange={handleChange}
-            required
-            className="mb-3"
-          />
-        </div>
+              {/* Product Name */}
+              <div className="text-left">
+                <TextField
+                  fullWidth
+                  label="Product Name"
+                  variant="outlined"
+                  name="product_name"
+                  value={newItems.product_name}
+                  onChange={handleChange}
+                  required
+                  className="mb-3"
+                />
+              </div>
 
-        {/* Variations */}
-        <div className="text-left">
-          <FormControl fullWidth variant="outlined" className="mb-3">
-            <InputLabel>Variations *</InputLabel>
-            <Select
-              value={newItems.variation_id || ""}
-              name="variation_id"
-              onChange={handleChange}
-              label="Variations *"
-              MenuProps={{
-                PaperProps: {
-                  style: {
-                    textAlign: "left",
-                  },
-                },
-              }}
-            >
-              <MenuItem value="">
-                <em>Select Variation</em>
-              </MenuItem>
-              {variations.map((variation, index) => (
-                <MenuItem key={variation._id || index} value={variation._id}>
-                  {variation.variation_name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
+              {/* Variations */}
+              <div className="text-left">
+                <FormControl fullWidth variant="outlined" className="mb-3">
+                  <InputLabel>Variations *</InputLabel>
+                  <Select
+                    value={newItems.variation_id || ""}
+                    name="variation_id"
+                    onChange={handleChange}
+                    label="Variations *"
+                    MenuProps={{
+                      PaperProps: {
+                        style: {
+                          textAlign: "left",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="">
+                      <em>Select Variation</em>
+                    </MenuItem>
+                    {variations.map((variation, index) => (
+                      <MenuItem
+                        key={variation._id || index}
+                        value={variation._id}
+                      >
+                        {variation.variation_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
 
-        {/* Buttons */}
-        <div className="pt-6 flex justify-end gap-6">
-          <Button
-            sx={{
-              color: "#e74c3c",
-              border: "1px solid #e74c3c",
-              "&:hover": {
-                backgroundColor: "#f9ebea",
-              },
-            }}
-            onClick={() => setShowAddForm(false)}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              backgroundColor: "#2ecc71",
-              "&:hover": {
-                backgroundColor: "#27ae60",
-              },
-            }}
-          >
-            Submit
-          </Button>
+              {/* Buttons */}
+              <div className="pt-6 flex justify-end gap-6">
+                <Button
+                  sx={{
+                    color: "#e74c3c",
+                  }}
+                  onClick={() => setShowAddForm(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#cc9f64",
+                    "&:hover": {
+                      backgroundColor: "#b88a57",
+                    },
+                  }}
+                >
+                  Submit
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
-      </form>
-    </div>
-  </div>
-)}
- 
+      )}
+
       {loading ? (
         <div className="flex justify-center items-center h-40">
           <RotatingLines width="50" strokeColor="#1abc9c" />
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-4 grid grid-cols-1 gap-4 overflow-x-auto">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden min-w-[500px] ">
             {/* Header Row */}
-            <div className="grid grid-cols-6 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-6 bg-[#fcefde] text-center text-sm md:text-base">
               {/* S.No Column */}
               <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
                 Sr No.
@@ -467,9 +469,7 @@ const NewProduct = () => {
 
                   {/* Category ID   */}
                   <div className="py-3 text-center overflow-hidden">
-                  
-                    {  product.brand_id?.brand_name || "No Brand" }
-                   
+                    {product.brand_id?.brand_name || "No Brand"}
                   </div>
 
                   <div className="py-3  text-center overflow-hidden">

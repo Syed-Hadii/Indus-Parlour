@@ -17,12 +17,8 @@ import {
   updateCategory,
 } from "../../../redux/slices/ProductSlices/categoriesSlice";
 import {
-  TextField,
-  Select,
-  MenuItem,
-  Button,
-  FormControl,
-  InputLabel,
+  TextField, 
+  Button, 
   IconButton,
 } from "@mui/material";
 import { toast } from "react-toastify";
@@ -32,8 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Pagination from "@mui/material/Pagination";
 
-const Categories = () => {
-  const url = "http://localhost:3003";
+const Categories = () => { 
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [editingCategoryId, setEditingCategoryId] = useState(null);
@@ -83,7 +78,7 @@ const Categories = () => {
     setEditingCategoryName(categoryName);
   };
   // Filter categories based on search query
-  const sortedCategories= [...categories] // Create a shallow copy to prevent direct mutation
+  const sortedCategories= [...categories]  
     .sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key])
         return sortConfig.direction === "asc" ? -1 : 1;
@@ -164,10 +159,10 @@ const Categories = () => {
             variant="outlined"
             placeholder="Search Category"
             size="small"
-            className="w-72"
+            className=" w-64 md:w-72"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress} // Trigger search on Enter
+            onKeyPress={handleKeyPress}
             InputProps={{
               endAdornment: (
                 <IconButton onClick={handleSearchSubmit}>
@@ -182,9 +177,9 @@ const Categories = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085",
+              backgroundColor: "#b88a57",
             },
           }}
         >
@@ -226,9 +221,9 @@ const Categories = () => {
                     disabled={loading}
                     variant="contained"
                     sx={{
-                      backgroundColor: "#1abc9c",
+                      backgroundColor: "#cc9f64",
                       "&:hover": {
-                        backgroundColor: "#16a085", // Optional: Adjust hover color for consistency
+                        backgroundColor: "#b88a57",
                       },
                     }}
                   >
@@ -245,18 +240,30 @@ const Categories = () => {
           <RotatingLines width="50" strokeColor="#1abc9c" />
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-4 grid grid-cols-1 gap-4 overflow-x-auto">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden min-w-[400px]">
             {/* Header Row */}
-            <div className="grid grid-cols-4 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-4 bg-[#fcefde] text-gray-800 text-center text-sm md:text-base">
               {/* Sortable S.No Column */}
-              <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
+              <div
+                className="py-3  font-semibold cursor-pointer flex justify-center items-center"
+                onClick={() => handleSort("category_name")}
+              >
                 S.No{" "}
+                {sortConfig.key === "category_name" ? (
+                  sortConfig.direction === "asc" ? (
+                    <FaSortUp />
+                  ) : (
+                    <FaSortDown />
+                  )
+                ) : (
+                  <FaSort />
+                )}
               </div>
 
               {/* Sortable Name Column */}
               <div
-                className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
+                className="py-3  font-semibold cursor-pointer flex justify-center items-center"
                 onClick={() => handleSort("category_name")}
               >
                 Name{" "}
@@ -273,7 +280,7 @@ const Categories = () => {
 
               {/* Sortable Added On Column */}
               <div
-                className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
+                className="py-3  font-semibold cursor-pointer flex justify-center items-center"
                 onClick={() => handleSort("createdAt")}
               >
                 Added On{" "}
@@ -288,7 +295,7 @@ const Categories = () => {
                 )}
               </div>
 
-              <div className="py-3 text-gray-800 font-semibold">Actions</div>
+              <div className="py-3 font-semibold">Actions</div>
             </div>
 
             {/* Data Rows */}

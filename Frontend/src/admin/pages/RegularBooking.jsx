@@ -33,10 +33,11 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { RotatingLines } from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
-
+import axios from "axios";
 import Pagination from "@mui/material/Pagination";
 
 const RegularBooking = () => {
+  const url = "http://localhost:3003";
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAddSalesForm, setshowAddSalesForm] = useState(false);
   const [newItems, setNewItems] = useState({
@@ -74,6 +75,8 @@ const RegularBooking = () => {
     key: "regular_customer",
     direction: "asc",
   });
+   const [receiptNumber, setReceiptNumber] = useState("");
+  const [receiptData, setReceiptData] = useState(null); 
 
   const dispatch = useDispatch();
   const packages = useSelector((state) => state.packages?.data || []);
@@ -362,6 +365,8 @@ const RegularBooking = () => {
       regular_recieve_amount: "",
       regular_appointment_time: "",
     });
+    setReceiptNumber("")
+    setReceiptData(null)
   };
   // * All CRUD Functions *
   // Add Package Function
@@ -454,7 +459,25 @@ const RegularBooking = () => {
       setLoading(false);
     }
   };
-
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      `${url}/regular_booking/reciept_data`,
+      { receipt_no: receiptNumber } // Corrected payload structure
+    );
+if (response) {
+  console.log(receiptNumber);
+  setReceiptData(response.data);  
+  console.log(response.data);  
+  toast.success("Booking fetched Successfully!");
+  setShowAddForm(false)
+}
+  } catch (error) {
+    console.log("Error:", error.response ? error.response.data : error.message);
+    toast.error("Booking not found"); // Improved error logging
+  }
+};
   return (
     <div className="p-6">
       <h1 className="text-xl mb-5 font-semibold text-left">
@@ -484,9 +507,9 @@ const RegularBooking = () => {
           startIcon={<FaPlus />}
           onClick={() => setshowAddSalesForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085",
+              backgroundColor: "#b88a57",
             },
           }}
         >
@@ -497,9 +520,9 @@ const RegularBooking = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085",
+              backgroundColor: "#b88a57",
             },
           }}
         >
@@ -509,7 +532,7 @@ const RegularBooking = () => {
       {showAddForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-5 text-center rounded shadow-lg w-[650px] h-auto mt-10 relative max-h-[80vh] overflow-y-auto">
-            <div className="border flex justify-between items-center p-5">
+            <div className=" flex justify-between items-center p-5">
               <h1 className="text-lg font-semibold mb-0 mx-auto">
                 Add New Sales Booking
               </h1>
@@ -521,15 +544,14 @@ const RegularBooking = () => {
 
             <hr className="mb-6 border-gray-400" />
 
-            <form className="space-y-6 mt-5">
-              {/* Services */}
+            <form className="space-y-6 mt-5" onSubmit={handleSubmit}>
+              {/* Receipt Number Field */}
               <TextField
                 fullWidth
-                label="Reciept Number"
+                label="Receipt Number"
                 variant="outlined"
-                name="service"
-                value={newItems.service}
-                onChange={handleChange}
+                value={receiptNumber}
+                onChange={(e) => setReceiptNumber(e.target.value)} // Updated state
                 required
               />
 
@@ -545,9 +567,9 @@ const RegularBooking = () => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#1abc9c",
+                    backgroundColor: "#cc9f64",
                     "&:hover": {
-                      backgroundColor: "#16a085",
+                      backgroundColor: "#b88a57",
                     },
                   }}
                 >
@@ -561,7 +583,7 @@ const RegularBooking = () => {
       {showAddSalesForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-5 text-center rounded shadow-lg w-[750px] h-auto mt-10 relative max-h-[85vh] overflow-y-auto">
-            <div className="border bg-[#2c3e50] text-[#ecf0f1] flex justify-between items-center p-5">
+            <div className="   flex justify-between items-center p-5">
               <h1 className="text-xl font-semibold mb-0 mx-auto">Add Sales</h1>
               <FaTimes
                 className="text-end cursor-pointer"
@@ -732,9 +754,8 @@ const RegularBooking = () => {
                   {/* Remove Button */}
                   <IconButton
                     onClick={() => delete_regularBooking(index)} // Pass index to delete function
-                    color="secondary"
                   >
-                    <FaTimes />
+                    <FaTimes className="text-red-500" />
                   </IconButton>
                 </div>
               ))}
@@ -812,9 +833,9 @@ const RegularBooking = () => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#1abc9c",
+                    backgroundColor: "#cc9f64",
                     "&:hover": {
-                      backgroundColor: "#16a085",
+                      backgroundColor: "#b88a57",
                     },
                   }}
                 >
@@ -832,9 +853,9 @@ const RegularBooking = () => {
         </div>
       ) : (
         <div className="mt-4 overflow-x-auto">
-          <div className="min-w-[1800px] bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+          <div className="min-w-[1800px] bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden">
             {/* Header Row */}
-            <div className="grid grid-cols-14 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-14 bg-[#fcefde] text-center text-sm md:text-base">
               {/* Sortable Name Column */}
               {/* Cusotmer Name */}
               <div

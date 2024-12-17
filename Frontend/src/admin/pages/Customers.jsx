@@ -195,9 +195,9 @@ const Customers = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085",
+              backgroundColor: "#b88a57",
             },
           }}
         >
@@ -246,9 +246,9 @@ const Customers = () => {
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#1abc9c",
+                    backgroundColor: "#cc9f64",
                     "&:hover": {
-                      backgroundColor: "#16a085", // Optional: Adjust hover color for consistency
+                      backgroundColor: "#b88a57", // Optional: Adjust hover color for consistency
                     },
                   }}
                 >
@@ -264,13 +264,25 @@ const Customers = () => {
           <RotatingLines width="50" strokeColor="#1abc9c" />
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-4 grid grid-cols-1 gap-4 overflow-x-auto">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden min-w-[350px]">
             {/* Header Row */}
-            <div className="grid grid-cols-4 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-4 bg-[#fcefde] text-center text-sm md:text-base">
               {/* Sortable S.No Column */}
-              <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
+              <div
+                className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
+                onClick={() => handleSort("customer_name")}
+              >
                 S.No{" "}
+                {sortConfig.key === "customer_name" ? (
+                  sortConfig.direction === "asc" ? (
+                    <FaSortUp />
+                  ) : (
+                    <FaSortDown />
+                  )
+                ) : (
+                  <FaSort />
+                )}
               </div>
 
               {/* Sortable Name Column */}

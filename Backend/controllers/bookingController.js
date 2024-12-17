@@ -1,10 +1,10 @@
 import Booking from "../models/bookingModel.js";
+import ReceiptCounter from "../models/recieptCounterModel.js";
 
 const addBooking = async (req, res) => {
-  console.log("hello");
   const {
     booking_date,
-    booking_service_type,
+    booking_type,
     booking_services,
     booking_packages,
     booking_customer,
@@ -13,25 +13,85 @@ const addBooking = async (req, res) => {
     booking_discount,
     booking_appointment_time,
   } = req.body;
+
   try {
-    const newBooking = new Booking({
+    // Generate receipt number
+    const receiptNo = await getReceiptNumber();
+
+    // Construct booking object based on type
+    const bookingData = {
+      booking_type,
       booking_date,
-      booking_service_type,
-      booking_services,
-      booking_packages,
       booking_customer,
       booking_payment_type,
       booking_advance,
       booking_discount,
-      booking_appointment_time,
+      receipt_no: receiptNo,
+      ...(booking_type === "Regular" && {
+        booking_appointment_time,
+        booking_services: booking_services.map((service) => ({
+          service: service.service,
+        })),
+        booking_packages: booking_packages.map((pkg) => ({
+          package: pkg.package,
+        })),
+      }),
+      ...(booking_type === "Bridal" && {
+        booking_services: booking_services.map((service) => ({
+          service: service.service,
+          service_date: service.service_date || null,
+          service_time: service.service_time || null,
+        })),
+        booking_packages: booking_packages.map((pkg) => ({
+          package: pkg.package,
+          services: pkg.services.map((service) => ({
+            service: service.service,
+            service_date: service.service_date || null,
+            service_time: service.service_time || null,
+          })),
+        })),
+      }),
+    };
+
+    // Save booking to the database
+    const newBooking = new Booking(bookingData);
+    const savedBooking = await newBooking.save();
+
+    // Fetch receipt data
+    const receiptData = await getRecentBooking(savedBooking._id);
+
+    res.json({
+      success: true,
+      message: "Booking added successfully.",
+      receiptData,
     });
-    await newBooking.save();
-    res.json({ success: true, message: "Booking added successfully." });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: "Error adding Booking." });
+    console.error(error);
+    res.json({
+      success: false,
+      message: "Error adding Booking.",
+      error: error.message,
+    });
   }
 };
+
+
+// Helper: Generate receipt number
+const getReceiptNumber = async () => {
+  let receiptCounter = await ReceiptCounter.findOne();
+  if (!receiptCounter) {
+    receiptCounter = new ReceiptCounter({ currentReceiptNumber: 1 });
+    await receiptCounter.save();
+  }
+  const receiptNo = String(receiptCounter.currentReceiptNumber).padStart(
+    4,
+    "0"
+  );
+  receiptCounter.currentReceiptNumber += 1;
+  await receiptCounter.save();
+  return receiptNo;
+};
+
 const getBooking = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 7;
@@ -44,7 +104,7 @@ const getBooking = async (req, res) => {
 
     // If search term is provided, use it in query
     if (search) {
-      query.booking_booking = { $regex: search, $options: "i" }; // Case-insensitive search
+      query.receipt_no = { $regex: search, $options: "i" }; // Case-insensitive search
     }
 
     // If `fetchAll` is true, return all categories matching the search (without pagination)
@@ -60,9 +120,18 @@ const getBooking = async (req, res) => {
       // Paginated fetch with search
       const totalBookings = await Booking.countDocuments(query);
       const bookings = await Booking.find(query)
-        .populate("booking_services", "service_title service_price")
-        .populate("booking_packages", "package_title package_price")
-        .populate("booking_customer", "customer_name")
+        .populate({
+          path: "booking_services.service",
+          select: "service_title service_price",
+        })
+        .populate({
+          path: "booking_packages.package",
+          select: "package_title package_price",
+        })
+        .populate({
+          path: "booking_customer",
+          select: "customer_name",
+        })
         .skip(skip)
         .limit(limit);
 
@@ -94,8 +163,8 @@ const deleteBooking = async (req, res) => {
 // };
 const updateBooking = async (req, res) => {
   const {
-    id, 
-    booking_service_type,
+    id,
+    booking_type,
     booking_services,
     booking_packages,
     booking_customer,
@@ -105,8 +174,8 @@ const updateBooking = async (req, res) => {
     booking_appointment_time,
   } = req.body;
   try {
-    const updatedData = { 
-      booking_service_type,
+    const updatedData = {
+      booking_type,
       booking_services,
       booking_packages,
       booking_customer,
@@ -127,6 +196,36 @@ const updateBooking = async (req, res) => {
   } catch (error) {
     console.error("Error updating Booking:", error);
     res.json({ success: false, message: "Server error", error });
+  }
+};
+// Recent Booking for Reciept Generating
+const getRecentBooking = async (bookingId) => {
+  try {
+    // Fetch the booking by ID
+    const booking = await Booking.findById(bookingId)
+      .populate({
+        path: "booking_services.service",
+        select: "service_title service_price",
+      })
+      .populate({
+        path: "booking_packages.package",
+        select: "package_title package_price",
+      })
+      .populate({
+        path: "booking_customer",
+        select: "customer_name",
+      });
+
+    if (!booking) {
+      console.log("Booking not found");
+      return;
+    }
+    console.log("Booking Agai Bhai:", booking);
+
+    return booking;
+  } catch (error) {
+    console.log("Error fetching booking data:", error);
+    return null;
   }
 };
 

@@ -5,7 +5,7 @@ import Loading from "../Components/Loading"; // Your Loading component
 
 const Login = () => {
   const url = "http://localhost:3003";
-  const [email, setEmail] = useState("");
+  const [inputValue, setInputValue] = useState(""); // Combines email/username into one field
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false); // State for loading
@@ -18,12 +18,17 @@ const Login = () => {
     setError(""); // Clear previous errors
 
     console.log("Form Submitted");
-    console.log("Email:", email);
+    console.log("Input:", inputValue);
     console.log("Password:", password);
 
+    // Check if the input is an email
+    const isEmail = /\S+@\S+\.\S+/.test(inputValue);
+
     try {
+      // Send inputValue as email or username based on validation
       const response = await axios.post(`${url}/user/login`, {
-        email,
+        email: isEmail ? inputValue : undefined,
+        userName: isEmail ? undefined : inputValue,
         password,
       });
 
@@ -38,7 +43,7 @@ const Login = () => {
           navigate("/admin/dashboard");
         }, 1500);
       } else {
-        setError("Invalid email or password");
+        setError("Invalid email/username or password");
         setIsLoading(false); // Stop loading if login fails
       }
     } catch (error) {
@@ -60,13 +65,13 @@ const Login = () => {
           <form className="space-y-4" onSubmit={handleLogin}>
             <div>
               <label className="block mb-1 text-sm font-medium text-gray-700">
-                Email
+                Email/Username
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Enter your email or username"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 required
               />

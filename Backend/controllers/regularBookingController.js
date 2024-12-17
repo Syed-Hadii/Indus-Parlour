@@ -1,4 +1,5 @@
 import Regular_Booking from "../models/regularBookingModel.js";
+import Booking from "../models/bookingModel.js"
 
 // Add a new Regular Booking
 const addRegular_Booking = async (req, res) => {
@@ -149,10 +150,28 @@ const deleteRegular_Booking = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+const getRecieptNo = async (req, res) => {
+  const { receipt_no } = req.body
+  try {
+    const booking = await Booking.findOne({ receipt_no })
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+      res.json({
+        success: true,
+        message: "Booking fetched successfully.",
+        booking,
+      });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Error getting  Booking reciept." });
+  }
+}
 
 export {
   addRegular_Booking,
   getRegular_Booking,
   updateRegular_Booking,
   deleteRegular_Booking,
+  getRecieptNo,
 };

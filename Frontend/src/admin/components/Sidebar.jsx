@@ -1,70 +1,87 @@
-import  { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import {
   FaDesktop,
   FaUser,
-  FaBox, 
-  FaChartLine, 
+  FaBox,
+  FaChartLine,
   FaConciergeBell,
   FaCalendarCheck,
-  FaBoxes, 
-  FaAngleLeft,
-  FaAngleRight,
+  FaBoxes,
   FaRegChartBar,
   FaChalkboardTeacher,
   FaBriefcase,
   FaShoppingBag,
-  FaMoneyBillWave,
+  FaMoneyBillWave, 
 } from "react-icons/fa";
+import { FiArrowLeftCircle } from "react-icons/fi";
+import logo from "../assets/logo.png"
 
-const Sidebar = () => {
+const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const location = useLocation();
+  useEffect(() => { 
+    toggleSidebar(false);
+  }, [location.pathname]);
 
   const linkClasses = ({ isActive }) => {
     return `flex items-center gap-2 h-10 px-2 rounded-md cursor-pointer transition-all duration-200 ${
       isActive
-        ? "bg-[#d5dbdb] text-[#1abc9c]"
-        : "text-[#2c3e50] hover:bg-[#d5dbdb] hover:text-black"
+        ? "bg-[#cc9f64] text-white"
+        : "text-[#2c3e50] hover:bg-[#f7e7d3] hover:text-[#cc9f64]"
     }`;
   };
 
   const handleDropdownToggle = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
   };
-
-  const handleSidebarToggle = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+ 
 
   return (
     <div
-      className={`flex ${
-        isSidebarOpen ? "md:w-[20%]" : "w-[60px]"
-      } transition-width duration-300`}
+      className={`relative md:transition-all md:duration-300 ${
+        isSidebarOpen ? "md:w-[20%] w-[65%]" : "w-0"
+      }`}
     >
-      <div className="sidebar flex flex-col gap-3 w-[100%] md:w-[100%] pt-4 px-1 md:px-4 border border-t-0 border-l-0  bg-[#dee4e6] text-[#2c3e50  ] min-h-screen font-semibold relative">
-        {/* Toggle Button */}
+      <div
+        className={`sidebar flex flex-col gap-3 bg-white text-[#2c3e50] min-h-screen font-semibold border border-t-0 border-l-0 pt- 
+      ${isSidebarOpen ? "w-full px-1 md:px-4" : "w-0 overflow-hidden"}
+      ${
+        isSidebarOpen
+          ? "absolute top-0 left-0 h-full z-50 transition-transform duration-300 transform translate-x-0"
+          : "absolute -translate-x-full"
+      } 
+      md:relative md:translate-x-0
+    `}
+      >
+        {/* Close Button for Mobile */}
         <button
-          className="absolute top-6 right-4 text-2xl focus:outline-none"
-          onClick={handleSidebarToggle}
+          className={`text-[#976f3b] text-xl font-bold absolute top-4 right-4 mt-1.5 md:hidden ${
+            isSidebarOpen ? "" : "hidden"
+          }`}
+          onClick={toggleSidebar}
         >
-          {isSidebarOpen ? <FaAngleLeft /> : <FaAngleRight />}
+          <FiArrowLeftCircle className="text-2xl cursor-pointer hover:text-gray-600" />
         </button>
 
         {/* Logo */}
         <div
-          className={`logo text-[#1abc9c]  mb-3 text-2xl ${
+          className={`logo mb-3 px-10  py-2 flex items-center ${
             !isSidebarOpen ? "hidden" : ""
           }`}
         >
-          <NavLink className="ml-4" to="/admin">
-            Indus Parlour
+          <NavLink className="ml-4 " to="/admin">
+            <img className="" src={logo} alt="" />
           </NavLink>
+          {/* <div className="border-black border-2 h-20"></div> */}
         </div>
-        <p className={`text-xs text-[#2c3e50]  ${!isSidebarOpen && "hidden"}`}>
+
+        {/* Navigation Header */}
+        <p className={`text-xs text-[#2c3e50] ${!isSidebarOpen && "hidden"}`}>
           Navigations
         </p>
+
+        {/* Navigation Links */}
         <div
           className={`flex flex-col -mt-1 gap-2 text-xs tracking-wider px-1.5 ${
             !isSidebarOpen && "hidden"
@@ -76,7 +93,7 @@ const Sidebar = () => {
               <>
                 <FaDesktop
                   className={`w-4 h-4 text-[#2c3e50] ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   } group-hover:text-[#d5dbdb] transition-colors duration-300`}
                 />
                 <span className=" text-sm">Dashboards</span>
@@ -86,12 +103,20 @@ const Sidebar = () => {
           {/* Products Dropdown */}
           <div className="relative">
             <div
-              className={linkClasses({ isActive: false })}
+              className={`${linkClasses({ isActive: false })} ${
+                openDropdown === "haari" ? "bg-[#cc9f64] text-white" : ""
+              } custom-css-class`}
               onClick={() => handleDropdownToggle("haari")}
             >
               <div className="flex items-center justify-between w-full cursor-pointer">
                 <div className="flex items-center gap-1.5  ">
-                  <FaBox className="text-[#2c3e50] w-4 h-4" />
+                  <FaBox
+                    className={`text-[#2c3e50] w-4 h-4 ${
+                      openDropdown === "haari"
+                        ? "animate-pulse text-[#fdefd9]"
+                        : ""
+                    }`}
+                  />
                   <span className="text-sm">Products</span>
                 </div>
                 <span
@@ -130,17 +155,25 @@ const Sidebar = () => {
           {/* Services */}
           <div className="relative">
             <div
-              className={linkClasses({ isActive: false })}
-              onClick={() => handleDropdownToggle("account")}
+              className={`${linkClasses({ isActive: false })} ${
+                openDropdown === "service" ? "bg-[#cc9f64] text-white" : ""
+              } custom-css-class`}
+              onClick={() => handleDropdownToggle("service")}
             >
               <div className="flex items-center justify-between w-full cursor-pointer">
                 <div className="flex items-center gap-2  ">
-                  <FaConciergeBell className="text-[#2c3e50] w-4 h-4" />
+                  <FaConciergeBell
+                    className={`text-[#2c3e50] w-4 h-4 ${
+                      openDropdown === "service"
+                        ? "animate-pulse text-[#fdefd9]"
+                        : ""
+                    }`}
+                  />
                   <span className=" text-sm">Services</span>
                 </div>
                 <span
                   className={`transition-transform ml-1 duration-300 ${
-                    openDropdown === "haari" ? "rotate-180" : "rotate-0"
+                    openDropdown === "service" ? "rotate-180" : "rotate-0"
                   }`}
                 >
                   ▼
@@ -150,7 +183,7 @@ const Sidebar = () => {
             {isSidebarOpen && (
               <div
                 className={`flex flex-col ml-6 text-center mt-1 gap-1 overflow-hidden transition-max-height duration-300 ease-in-out ${
-                  openDropdown === "account" ? "max-h-40" : "max-h-0"
+                  openDropdown === "service" ? "max-h-40" : "max-h-0"
                 }`}
               >
                 <NavLink className={linkClasses} to="service_category">
@@ -168,7 +201,7 @@ const Sidebar = () => {
               <>
                 <FaBoxes
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]  " : ""
                   }`}
                 />
                 <span className="text-sm">Packages</span>
@@ -182,7 +215,7 @@ const Sidebar = () => {
               <>
                 <FaCalendarCheck
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className="text-sm ">Booking</span>
@@ -196,7 +229,7 @@ const Sidebar = () => {
               <>
                 <FaChartLine
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className=" text-sm   ">Regular Bookings</span>
@@ -210,7 +243,7 @@ const Sidebar = () => {
               <>
                 <FaUser
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className=" text-sm">Customers</span>
@@ -224,7 +257,7 @@ const Sidebar = () => {
               <>
                 <FaBriefcase
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className="  text-sm  ">Staff</span>
@@ -238,7 +271,7 @@ const Sidebar = () => {
               <>
                 <FaShoppingBag
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className="  text-sm">Purchase</span>
@@ -251,7 +284,7 @@ const Sidebar = () => {
               <>
                 <FaBoxes
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className="  text-sm">Stock</span>
@@ -264,7 +297,7 @@ const Sidebar = () => {
               <>
                 <FaMoneyBillWave
                   className={`text-[#2c3e50] w-4 h-4 ${
-                    isActive ? "animate-pulse" : ""
+                    isActive ? "animate-pulse text-[#fdefd9]" : ""
                   }`}
                 />
                 <span className="  text-sm">Expense</span>
@@ -275,12 +308,20 @@ const Sidebar = () => {
           {/* Report (Dropdown) */}
           <div className="relative">
             <div
-              className={linkClasses({ isActive: false })}
+              className={`${linkClasses({ isActive: false })} ${
+                openDropdown === "stock" ? "bg-[#cc9f64] text-white" : ""
+              } custom-css-class`}
               onClick={() => handleDropdownToggle("stock")}
             >
               <div className="flex items-center justify-between w-full cursor-pointer transition-all">
                 <div className="flex items-center gap-2  ">
-                  <FaRegChartBar className="text-[#2c3e50] w-4 h-4" />
+                  <FaRegChartBar
+                    className={`text-[#2c3e50] w-4 h-4 ${
+                      openDropdown === "stock"
+                        ? "animate-pulse text-[#fdefd9]"
+                        : ""
+                    }`}
+                  />
                   <span className=" text-sm text-red-600">Reports</span>
                 </div>
                 <span
@@ -331,12 +372,20 @@ const Sidebar = () => {
           {/* Course Management */}
           <div className="relative">
             <div
-              className={linkClasses({ isActive: false })}
+              className={`${linkClasses({ isActive: false })} ${
+                openDropdown === "vouchers" ? "bg-[#cc9f64] text-white" : ""
+              } custom-css-class`}
               onClick={() => handleDropdownToggle("vouchers")}
             >
               <div className="flex items-center justify-between w-full cursor-pointer transition-all">
                 <div className="flex items-center gap-1  ">
-                  <FaChalkboardTeacher className="text-[#2c3e50] w-4 h-4" />
+                  <FaChalkboardTeacher
+                    className={`text-[#2c3e50] w-4 h-4 ${
+                      openDropdown === "vouchers"
+                        ? "animate-pulse text-[#fdefd9]"
+                        : ""
+                    }`}
+                  />
                   <span className=" text-sm">Course Management</span>
                 </div>
                 <span
@@ -368,6 +417,14 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
+
+      {/* Overlay for Mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 backdrop-blur-md z-40 md:hidden"
+          onClick={toggleSidebar} // Close sidebar when overlay is clicked
+        ></div>
+      )}
     </div>
   );
 };

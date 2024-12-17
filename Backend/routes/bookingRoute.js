@@ -3,7 +3,7 @@ import {
   addBooking,
   deleteBooking,
   getBooking,
-  updateBooking,
+  updateBooking, 
 } from "../controllers/bookingController.js";
 
 const bookingRouter = express.Router();
@@ -11,6 +11,6 @@ const bookingRouter = express.Router();
 bookingRouter.post("/add_booking", addBooking);
 bookingRouter.get("/get_booking", getBooking);
 bookingRouter.put("/update_booking", updateBooking);
-bookingRouter.delete("/delete_booking", deleteBooking);
+bookingRouter.delete("/delete_booking", deleteBooking); 
 
 export default bookingRouter;

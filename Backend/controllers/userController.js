@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 // Hardcoded email and password
 const hardcodedUser = {
   email: "admin@admin.com",
+  userName: "Admin",
   password: "admin", // Pre-hashed password
 };
 
@@ -12,28 +13,29 @@ const createToken = (id) => {
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, userName, password } = req.body;
   // console.log(email);
   try {
-    if (!email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+    if ((!email && !userName) || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email or username and password are required" });
     }
 
-    if (email !== hardcodedUser.email) {
-      return res.status(401).json({ message: "Invalid email " });
+    // Check if email or username matches
+    const isEmailMatch = email === hardcodedUser.email;
+    const isUserNameMatch = userName === hardcodedUser.userName;
+
+    if (!isEmailMatch && !isUserNameMatch) {
+      return res.status(401).json({ message: "Invalid email or username" });
     }
-    
+
+    // Check if password matches
     if (password !== hardcodedUser.password) {
-      return res.status(401).json({ message: "Invalid password " });
+      return res.status(401).json({ message: "Invalid password" });
     }
-
-    // const match = await bcrypt.compare(password, hardcodedUser.password);
-    // console.log(hardcodedUser.password);
-    // if (!match) {
-    //   return res.status(401).json({ message: "Invalid email or password" });
-    // }
-
-    const token = createToken(hardcodedUser.email); // Use email as the ID
+    // Generate token using email or username (priority to email if provided)
+    const token = createToken(email || userName);
     res.json({ success: true, token });
   } catch (error) {
     console.log(error);

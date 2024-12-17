@@ -56,12 +56,10 @@ const Unit = () => {
      dispatch(fetchUnits({ page, search: searchQuery })).finally(() =>
        setLoading(false)
      );
-   };
-
+   }; 
    const handleSearchSubmit = () => {
      dispatch(fetchUnits({ page: 1, search: searchQuery }));
-   };
-
+   }; 
    const handleKeyPress = (event) => {
      if (event.key === "Enter") {
        handleSearchSubmit();
@@ -70,9 +68,7 @@ const Unit = () => {
    const handleEdit = (unitId, unitName) => {
      setEditingUnitId(unitId);
      setEditingUnitName(unitName);
-   };
-    
-
+   }; 
    // Filter and sort units locally
  const sortedUnits = [...units] // Create a shallow copy to prevent direct mutation
    .sort((a, b) => {
@@ -81,9 +77,7 @@ const Unit = () => {
      if (a[sortConfig.key] > b[sortConfig.key])
        return sortConfig.direction === "asc" ? 1 : -1;
      return 0;
-   });
-
-
+   }); 
    // Handle sorting when clicking on column headers
  const handleSort = (key) => {
    let direction = "asc";
@@ -91,8 +85,7 @@ const Unit = () => {
      direction = "desc";
    }
    setSortConfig({ key, direction });
- };
-
+ }; 
    // * All CRUD Functions *
    // Add Unit Function
    const handleAddUnit = async (e) => {
@@ -172,8 +165,8 @@ const Unit = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
-            "&:hover": { backgroundColor: "#16a085" },
+            backgroundColor: "#cc9f64",
+            "&:hover": { backgroundColor: "#b88a57" },
           }}
         >
           Add New Unit
@@ -194,15 +187,21 @@ const Unit = () => {
                 required
               />
               <div className="pt-8 flex justify-end gap-7">
-                <Button color="secondary" onClick={() => setShowAddForm(false)}>
+                <Button
+                  className="text-red-600"
+                  sx={{
+                    color: "red",
+                  }}
+                  onClick={() => setShowAddForm(false)}
+                >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   variant="contained"
                   sx={{
-                    backgroundColor: "#1abc9c",
-                    "&:hover": { backgroundColor: "#16a085" },
+                    backgroundColor: "#cc9f64",
+                    "&:hover": { backgroundColor: "#b88a57" },
                   }}
                 >
                   Submit
@@ -217,13 +216,25 @@ const Unit = () => {
           <RotatingLines width="50" strokeColor="#1abc9c" />
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-4 grid grid-cols-1 gap-4 overflow-x-auto">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden min-w-[350px]">
             {/* Header Row */}
-            <div className="grid grid-cols-4 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-4 bg-[#fcefde] text-center text-sm md:text-base">
               {/* Sortable S.No Column */}
-              <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
+              <div
+                className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center"
+                onClick={() => handleSort("unit_name")}
+              >
                 S.No{" "}
+                {sortConfig.key === "unit_name" ? (
+                  sortConfig.direction === "asc" ? (
+                    <FaSortUp />
+                  ) : (
+                    <FaSortDown />
+                  )
+                ) : (
+                  <FaSort />
+                )}
               </div>
 
               {/* Sortable Name Column */}

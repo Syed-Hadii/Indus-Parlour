@@ -17,12 +17,8 @@ import {
   updateServiceCategory,
 } from "../../../redux/slices/ServiceSlices/serviceCategorySlice";
 import {
-  TextField,
-  Select,
-  MenuItem,
-  Button,
-  FormControl,
-  InputLabel,
+  TextField, 
+  Button, 
   IconButton,
 } from "@mui/material";
 import { toast } from "react-toastify";
@@ -32,8 +28,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import Pagination from "@mui/material/Pagination";
 
-const ServiceCategory = () => {
-  const url = "http://localhost:3003";
+const ServiceCategory = () => { 
   const [showAddForm, setShowAddForm] = useState(false);
   const [newCategory, setNewCategory] = useState("");
   const [editingCategoryId, setEditingCategoryId] = useState(null);
@@ -186,9 +181,9 @@ const ServiceCategory = () => {
           startIcon={<FaPlus />}
           onClick={() => setShowAddForm(true)}
           sx={{
-            backgroundColor: "#1abc9c",
+            backgroundColor: "#cc9f64",
             "&:hover": {
-              backgroundColor: "#16a085",
+              backgroundColor: "#b88a57",
             },
           }}
         >
@@ -230,9 +225,9 @@ const ServiceCategory = () => {
                     disabled={loading}
                     variant="contained"
                     sx={{
-                      backgroundColor: "#1abc9c",
+                      backgroundColor: "#cc9f64",
                       "&:hover": {
-                        backgroundColor: "#16a085", // Optional: Adjust hover color for consistency
+                        backgroundColor: "#b88a57",
                       },
                     }}
                   >
@@ -249,10 +244,10 @@ const ServiceCategory = () => {
           <RotatingLines width="50" strokeColor="#1abc9c" />
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-1 gap-4">
-          <div className="bg-white border border-gray-300 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-4 grid grid-cols-1 gap-4 overflow-x-auto">
+          <div className="bg-white border border-[#fcefde] rounded-lg shadow-lg overflow-hidden min-w-[350px]">
             {/* Header Row */}
-            <div className="grid grid-cols-4 bg-[#e0f2e9] text-center text-sm md:text-base">
+            <div className="grid grid-cols-4 bg-[#fcefde] text-center text-sm md:text-base">
               {/* Sortable S.No Column */}
               <div className="py-3 text-gray-800 font-semibold cursor-pointer flex justify-center items-center">
                 S.No{" "}
